@@ -8,12 +8,8 @@ import {upload} from '../Middleware/upload.js';
 import { authenticate } from '../Middleware/authenticate.js';
 import { postmodel } from '../Model/addinspiration.js';
 import { usercheck } from '../Middleware/usercheck.js';
-// import {Inspiration} from '../Model/addComment.js'
  const userauth=Router();
 
- const convertToBase64 = (buffer) => {
-    return buffer.toString('base64');
-};
 
  
  userauth.post('/signup',async(req,res)=>{
@@ -93,65 +89,27 @@ import { usercheck } from '../Middleware/usercheck.js';
 });
 
 
-// userauth.post('/addLog', authenticate, usercheck, async (req, res) => {
-//     try {
-//         const { category, title, description, targetdate, image } = req.body; 
-//         console.log("Title:", title);
-
-//         let User = await User.findOne({ username: req.UserName });
-//         if (!User) {
-//             return res.status(404).json({ error: "User not found" });
-//         }
-//         console.log("User:", User);
-
-//         let LoggedUser = await AddLog.findOne({ user: User._id });
-
-//         if (!LoggedUser) {
-//             LoggedUser = new AddLog({ user: User._id, logs: [] });
-//         }
-
-//         LoggedUser.logs.push({
-//             category,
-//             title,
-//             description,
-//             targetdate,
-//             image  
-//         });
-
-       
-//         await LoggedUser.save();
-//         console.log(LoggedUser);
-        
-
-//         res.status(201).json({ message: "Log added successfully" });
-//         console.log("Log added successfully");
-//     }  
-//     catch (error) {
-//         console.error("Error adding log:", error);
-//         res.status(500).json({ error: "Internal Server Error" });
-//     }
-// });
 
 userauth.post('/addLog', authenticate, usercheck, async (req, res) => {
     try {
         const { category, title, description, targetdate, image } = req.body; 
         console.log("Title:", title);
 
-        // ✅ Find the user
+        //  Find the user
         const foundUser = await User.findOne({ username: req.UserName });
         if (!foundUser) {
             return res.status(404).json({ error: "User not found" });
         }
         console.log("User:", foundUser);
 
-        // ✅ Find user's logs or create a new one
+        // Find user's logs or create a new one
         let userLogs = await AddLog.findOne({ user: foundUser._id });
 
         if (!userLogs) {
             userLogs = new AddLog({ user: foundUser._id, logs: [] });
         }
 
-        // ✅ Push new log entry
+        // Push new log entry
         userLogs.logs.push({
             category,
             title,
@@ -160,7 +118,7 @@ userauth.post('/addLog', authenticate, usercheck, async (req, res) => {
             image  
         });
 
-        // ✅ Save the updated log document
+        // Save the updated log document
         await userLogs.save();
         console.log("Updated Logs:", userLogs);
 
@@ -218,20 +176,7 @@ userauth.get('/getAllLogs',async(req,res)=>{
 
 
 
-// userauth.get('/getAllLogs', authenticate, async (req, res) => {
-//     try {
-//         const userLogs = await AddLog.findOne({ user: req.userid });
 
-//         if (!userLogs || !userLogs.logs.length) {
-//             return res.json({ logs: [] }); // Return empty array if no logs
-//         }
-
-//         res.json({ logs: userLogs.logs }); // Ensure 'logs' key exists in response
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).json({ msg: 'Internal Server Error' });
-//     }
-// });
 
 
 userauth.get("/api/getLog", async (req, res) => { 
@@ -256,88 +201,6 @@ userauth.get("/api/getLog", async (req, res) => {
     }
 });
 
-
-
-
-
-
-userauth.get('/getLogsByCategory/:category', authenticate, async (req, res) => {
-    try {
-        const { category } = req.params;
-        console.log("Fetching logs for category:", category);
-
-        // Find logs inside the logs array using $elemMatch
-        const logs = await AddLog.find({ logs: { $elemMatch: { category } } });
-
-        if (!logs.length) {
-            return res.status(404).json({ message: "No logs found for this category" });
-        }
-
-        // Extract matching logs from nested structure
-        const categoryLogs = logs.flatMap(logEntry => logEntry.logs.filter(log => log.category === category));
-
-        res.status(200).json(categoryLogs);
-    } catch (error) {
-        console.error("Error fetching logs:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});
-
-
-
-
-// userauth.get('/getLog',authenticate,usercheck,async(req,res)=>{
-    
-
-//     try {
-//         const { title } = req.query; // Get title from query parameters
-
-//         if (!title) {
-//             return res.status(400).json({ message: "Title is required" });
-//         }
-
-//         // Find logs where the title matches
-//         const logs = await AddLog.find({ "logs.title": title }, { "logs.$": 1 }); // $ operator returns only matching log
-
-//         if (logs.length === 0) {
-//             return res.status(404).json({ message: "No logs found with this title" });
-//         }
-
-//         res.status(200).json(logs);
-//         console.log(logs);
-        
-//     } catch (error) {
-//         console.error("Error fetching log:", error);
-//         res.status(500).json({ message: "Internal Server Error" });
-//     }
-// });
-    
-userauth.put('/updateLog', authenticate, usercheck, upload.single("LogImage"), async (req, res) => {
-    try {
-        const { Title, Description, Targetdate } = req.body;
-        const imageBase64 = req.file ? req.file.buffer.toString("base64") : null;
-
-        // Find the document that contains the log
-        const logEntry = await AddLog.findOne({ "logs.title": Title });
-
-        if (!logEntry) return res.status(404).send("Log not found");
-
-        // Find the specific log inside the array and update it
-        const logToUpdate = logEntry.logs.find(log => log.title === Title);
-        if (logToUpdate) {
-            logToUpdate.description = Description || logToUpdate.description;
-            logToUpdate.targetdate = Targetdate || logToUpdate.targetdate;
-            logToUpdate.image = imageBase64 || logToUpdate.image;
-        }
-
-        // Save the updated document
-        await logEntry.save();
-
-        res.status(200).send("Log updated");
-    } catch (error) {
-        res.status(500).send("Internal Server Error");
-    }
-});
 
 
 userauth.delete('/deleteLog', authenticate, usercheck, async (req, res) => {
@@ -372,32 +235,6 @@ userauth.delete('/deleteLog', authenticate, usercheck, async (req, res) => {
     }
 });
 
-
-
-// userauth.delete('/deleteLog',authenticate,usercheck,async(req,res)=>{
-//     const name=req.body.Title;
-//     console.log(name);
-
-//     const Detail=await AddLog.findOne({title:name})
-//     console.log(Detail);
-//      try
-//      {
-//        if(Detail)
-//         {
-//             await loges.findOneAndDelete(Detail)
-//         res.status(200).send("Log Removed")
-//        }
-//        else
-//        {
-//         res.status(404).json({msg:'No such Log'})
-//        }
-
-//      }
-//      catch
-//      {
-//         res.status(500).send("Internal Server Error")
-//      }
-// });
 
 userauth.post(
     "/addProfile",
@@ -438,51 +275,13 @@ userauth.post(
 
 
 
-// userauth.post('/addProfile',authenticate,usercheck,upload.single("ProfileImage"),async(req,res)=>{   
-//     try{
-//         const {UserName,Email,Bio}= req.body;
-//         console.log(UserName);
-//         const existingProfile=await profile.findOne({username:UserName})
-//         if(existingProfile)
-//             {
-//             res.status(400).send("Bad request");
-//             }
-//         else
-//         {   
-//             let imageBase64 = null;
-//         if (req.file)
-//              {
-//                 imageBase64 = convertToBase64(req.file.buffer);
-//              }
-            
-//             const newProfile=new profile({
-//                       username:UserName,
-//                       email:Email,
-//                       bio:Bio,
-//                       image:imageBase64
-//         });
-//         await newProfile.save();
-
-//         res.status(201).send("Profile added")
-//         console.log("Profile added");
-
-//         }
-
-//         }  
-    
-//     catch
-//     {
-//         res.status(500).send("Internal Server Error")
-
-//     }
-// });
 
 
 
 userauth.get("/getProfile", authenticate, usercheck, async (req, res) => {
     try {
         const username = req.UserName; // Extract from auth middleware
-        console.log("📌 Authenticated User:", username);
+        console.log(" Authenticated User:", username);
 
         const Details = await profile.findOne({ username });
 
@@ -492,61 +291,12 @@ userauth.get("/getProfile", authenticate, usercheck, async (req, res) => {
             return res.status(404).json({ msg: "No such profile" });
         }
     } catch (error) {
-        console.error("🚨 Error fetching profile:", error);
+        console.error("Error fetching profile:", error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 });
 
-  
-  
-
-// userauth.get("/getProfile", authenticate, usercheck, async (req, res) => {
-//     try {
-//         const name = req.query.username;
-//         console.log("Fetching profile for:", name);
-
-//         const Details = await profile.findOne({ username: name });
-
-//         if (Details) {
-//             res.status(200).json({ data: Details });
-//         } else {
-//             res.status(404).json({ msg: "No such Profile" });
-//         }
-//     } catch (error) {
-//         console.error("Error fetching profile:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
-
-
-
-// userauth.put('/updateProfile', authenticate, usercheck, upload.single("ProfileImage"), async (req, res) => {
-//     try {
-//         const { UserName, Email, Bio } = req.body;
-//         const result = await profile.findOne({ username: UserName });
-
-//         if (!result) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-
-//         let imageBase64 = result.image; // Keep existing image if not updated
-//         if (req.file) {
-//             imageBase64 = convertToBase64(req.file.buffer);
-//         }
-
-//         result.username = UserName;
-//         result.email = Email;
-//         result.bio = Bio;
-//         result.image = imageBase64;
-
-//         await result.save();
-//         console.log("Profile updated");
-//         res.status(200).json({ message: "Profile updated successfully" });
-//     } catch (error) {
-//         console.error("Error updating profile:", error);
-//         res.status(500).json({ message: "Internal Server Error" });
-//     }
-// });
+ 
 
 
 userauth.patch('/updateBioAndImage', authenticate, usercheck, upload.single("ProfileImage"), async (req, res) => {
@@ -554,13 +304,13 @@ userauth.patch('/updateBioAndImage', authenticate, usercheck, upload.single("Pro
         const { bio } = req.body;
         const username = req.UserName; // Extract from middleware
 
-        console.log("📌 Updating profile for:", username);
+        console.log(" Updating profile for:", username);
 
         // Fetch user from database
         const result = await profile.findOne({ username });
 
         if (!result) {
-            console.log("❌ User not found in database:", username);
+            console.log("User not found in database:", username);
             return res.status(404).json({ message: "User not found" });
         }
 
@@ -575,93 +325,16 @@ userauth.patch('/updateBioAndImage', authenticate, usercheck, upload.single("Pro
         }
 
         await result.save();
-        console.log("✅ Bio and Image updated for:", username);
+        console.log("Bio and Image updated for:", username);
         res.status(200).json({ message: "Bio and Image updated successfully" });
 
     } catch (error) {
-        console.error("🚨 Error updating bio and image:", error);
+        console.error(" Error updating bio and image:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
 
 
-
-
-
-userauth.post('/addComment', authenticate, usercheck, async (req, res) => {
-    try {
-        // Username is extracted from authentication (req.UserName)
-        const username = req.UserName; // Ensure your auth middleware sets this correctly
-
-        // Find the post
-        const Post = await postmodel.findById(req.body.postId);
-        if (!Post) return res.status(404).send("Post not found");
-        console.log(Post);
-
-        // Extract comment content
-        const { content } = req.body;
-
-        // Add the comment with username
-        const comment = {
-            content: content,
-            user: username,  // Store username instead of user ID
-        };
-
-        Post.comments.push(comment);
-        await Post.save();
-
-        res.status(201).json({ message: "Comment posted", comment });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-
-
-
-userauth.get("/api/getInspiration/:id", async (req, res) => {
-    try {
-        console.log("Received ID:", req.params.id); // Debugging
-        const post = await postmodel.findById(req.params.id);
-        if (!post) return res.status(404).json({ message: "Post not found" });
-
-        res.json(post);
-    } catch (error) {
-        console.error("Error fetching post:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-});
-
-
-
-// userauth.post('/addComment', authenticate, usercheck, async (req, res) => {
-//     try {
-//         // Find the user
-//         const User = await user.findOne({ username: req.UserName });
-//         if (!User) return res.status(404).send("User not found");
-
-//         // Find the post
-//         const Post = await postmodel.findById(req.body.postId);
-//         if (!Post) return res.status(404).send("Post not found");
-
-//         // Extract comment content
-//         const { content } = req.body;
-
-//         // Add the comment to the post's comments array
-//         Post.comments.push({
-//             content: content,
-//             user: User._id
-//         });
-
-//         await Post.save();
-
-//         res.status(201).send("Comment posted");
-//         console.log("Comment posted");
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
 
 userauth.get('/getUserRole', authenticate, (req, res) => {
     console.log("UserRole from Middleware:", req.userrole);
@@ -674,7 +347,7 @@ userauth.post("/bookmark", authenticate, async (req, res) => {
         const { postId } = req.body;
         console.log(postId);
         
-        const foundUser = await User.findById(req.userid); // ✅ Use correct model
+        const foundUser = await User.findById(req.userid); //  Use correct model
         console.log("hi");
         
         console.log(foundUser);
@@ -702,26 +375,6 @@ userauth.post("/bookmark", authenticate, async (req, res) => {
 
 
 
-
-userauth.get("/api/getPost/:postId", async (req, res) => {
-    try {
-      const post = await postmodel.findById(req.params.postId);
-      if (!post) return res.status(404).json({ message: "Post not found" });
-  
-      res.json(post);
-    } catch (error) {
-      console.error("Error fetching post:", error);
-      res.status(500).json({ message: "Server error" });
-    }
-  });
-
-
-
-
-
-
-
-
 // Get all bookmarked posts for the logged-in user
 userauth.get("/bookmarks", authenticate, async (req, res) => {
     try {
@@ -729,7 +382,7 @@ userauth.get("/bookmarks", authenticate, async (req, res) => {
 
         if (!foundUser) return res.status(404).json({ msg: "User not found" });
 
-        res.json(foundUser.bookmarks); // ✅ Returns full bookmarked posts
+        res.json(foundUser.bookmarks); //  Returns full bookmarked posts
     } catch (error) {
         console.error("Error fetching bookmarks:", error);
         res.status(500).json({ msg: "Internal Server Error" });

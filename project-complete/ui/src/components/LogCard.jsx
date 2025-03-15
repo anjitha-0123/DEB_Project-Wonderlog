@@ -43,11 +43,11 @@ const LogCard = ({ log, fetchLogs }) => {
                 placeholder="Search logs by title or category..."
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className=" p-2 mb-4 border rounded-lg text-black "
+                className="w-full p-2 mb-4 border rounded-lg text-black"
             />
 
             {/* Logs Grid */}
-            <div className="sm: grid md: grid grid-cols-3 gap-[550px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredLogs.map((entry) => {
                     const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
                     const addedDate = new Date(entry.targetdate).toISOString().split("T")[0]; // Convert target date
@@ -62,7 +62,7 @@ const LogCard = ({ log, fetchLogs }) => {
                     }
 
                     return (
-                        <div key={entry._id} className="border-4 border-black p-4 rounded-lg bg-gray-800 md: w-[500px] h-[460px]">
+                        <div key={entry._id} className="border-4 border-black p-4 rounded-lg bg-gray-800">
                             {/* Image */}
                             {entry.image && (
                                 <div className="w-full h-48 flex items-center justify-center bg-gray-900 rounded">
@@ -76,7 +76,7 @@ const LogCard = ({ log, fetchLogs }) => {
 
                             {/* Log Details */}
                             <h3 className="text-lg font-bold mt-2 text-orange-400">{entry.category}</h3>
-                            <h1 className="text-lg font-bold mt-2 text-yellow-400 ">{entry.title}</h1>
+                            <h1 className="text-lg font-bold mt-2 text-yellow-400">{entry.title}</h1>
                             <p className="text-white mt-2">
                                 {expandedDescriptions[entry._id]
                                     ? entry.description
@@ -90,20 +90,20 @@ const LogCard = ({ log, fetchLogs }) => {
                             >
                                 {expandedDescriptions[entry._id] ? "Less" : "More"}
                             </button>
-                            <div className="flex gap-28">
-                            {/* Target Date with Status */}
-                            <p className="text-sm text-gray-400 mt-2 bg-red-900 w-40 h-6 rounded-lg w-52 h-14 text-white p-2">
-                                {dateMessage}
-                            </p>
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mt-4">
+                                {/* Target Date with Status */}
+                                <p className="text-sm text-white bg-red-900 rounded-lg p-2">
+                                    {dateMessage}
+                                </p>
 
-                            {/* Delete Button */}
-                            <button
-                                className="bg-red-600 hover:bg-red-700 text-white text-xl h-12 w-24 mt-4 rounded-lg"
-                                onClick={() => handleDelete(entry.title)}
-                            >
-                                Delete
-                            </button>
-</div>
+                                {/* Delete Button */}
+                                <button
+                                    className="bg-red-600 hover:bg-red-700 text-white text-xl h-12 w-24 rounded-lg"
+                                    onClick={() => handleDelete(entry.title)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     );
                 })}

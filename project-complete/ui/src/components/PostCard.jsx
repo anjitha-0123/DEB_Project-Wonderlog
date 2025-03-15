@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 
@@ -180,7 +179,7 @@ const PostCard = () => {
         : posts;
 
     return (
-        <div className="min-h-screen bg-gray-100 py-10">
+        <div className="min-h-screen bg-gray-100 py-10 ">
             <h2 className="text-4xl font-bold text-center mb-10 font-serif text-blue-900">All Inspirations</h2>
             {userRole === "user" && (
             <div className="text-center mb-6">
@@ -201,7 +200,7 @@ const PostCard = () => {
             <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {displayedPosts.map((post) => (
                     <div key={post._id} className="relative">
-                        <Link to={`/postdetails/${post._id}`} className="block">
+                        <div className="block">
                             <div className="bg-white p-6 mt-12 rounded-lg shadow-md hover:shadow-lg transition">
                                 <h3 className="text-xl font-semibold text-black">{post.title}</h3>
                                 {post.image && (
@@ -232,7 +231,7 @@ const PostCard = () => {
              </div>
      )}
                             </div>
-                        </Link>
+                        </div>
 
                         {/* Bookmark Button */}
                         {userRole === "user" && (
@@ -257,7 +256,7 @@ const PostCard = () => {
                             <div className="mt-2">
                                 <input
                                     type="text"
-                                    className="w-full p-2 border rounded-lg"
+                                    className="w-full p-2 border-2 border-black text-black rounded-lg"
                                     placeholder="Write a comment..."
                                     value={comments[post._id] || ""}
                                     onChange={(event) => handleCommentChange(post._id, event)}
@@ -284,239 +283,3 @@ const PostCard = () => {
 };
 
 export default PostCard;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faComment } from "@fortawesome/free-solid-svg-icons";
-
-// const PostCard = () => {
-//     const [posts, setPosts] = useState([]);
-//     const [loading, setLoading] = useState(true);
-//     const [error, setError] = useState(null);
-//     const [userRole, setUserRole] = useState("");
-//     const [selectedFile, setSelectedFile] = useState(null);
-//     const [comments, setComments] = useState({});
-//     const [storedComments, setStoredComments] = useState({});
-//     const [commentVisibility, setCommentVisibility] = useState({});
-
-//     useEffect(() => {
-//         const fetchPosts = async () => {
-//             try {
-//                 const response = await fetch("/api/getAllInspiration", {
-//                     method: "GET",
-//                     credentials: "include",
-//                     headers: { "Content-Type": "application/json" },
-//                 });
-//                 const data = await response.json();
-//                 if (!Array.isArray(data)) throw new Error("Invalid data format");
-//                 setPosts(data);
-//                 setLoading(false);
-//                 setStoredComments(JSON.parse(localStorage.getItem("comments")) || {});
-//             } catch (error) {
-//                 setError(error.message);
-//                 setLoading(false);
-//             }
-//         };
-
-//         const fetchUserRole = async () => {
-//             try {
-//                 const res = await fetch("/api/getUserRole", {
-//                     method: "GET",
-//                     credentials: "include",
-//                     headers: { "Content-Type": "application/json" },
-//                 });
-//                 const data = await res.json();
-//                 if (data && data.userrole) setUserRole(data.userrole);
-//             } catch (error) {
-//                 console.error("Error fetching user role:", error);
-//             }
-//         };
-
-//         fetchPosts();
-//         fetchUserRole();
-//     }, []);
-
-//     const toggleCommentField = (id) => {
-//         setCommentVisibility((prev) => ({ ...prev, [id]: !prev[id] }));
-//     };
-
-//     const handleCommentChange = (id, event) => {
-//         setComments((prev) => ({ ...prev, [id]: event.target.value }));
-//     };
-
-//     const handleCommentSubmit = (id) => {
-//         if (!comments[id]) return;
-//         const updatedComments = {
-//             ...storedComments,
-//             [id]: [...(storedComments[id] || []), comments[id]],
-//         };
-//         localStorage.setItem("comments", JSON.stringify(updatedComments));
-//         setStoredComments(updatedComments);
-//         setComments((prev) => ({ ...prev, [id]: "" }));
-//     };
-
-//     return (
-//         <div className="min-h-screen bg-gray-100 py-10">
-//             <h2 className="text-4xl font-bold text-center mb-10 font-serif">All Inspirations</h2>
-//             {loading && <p className="text-center text-lg">Loading inspirations...</p>}
-//             {error && <p className="text-center text-red-600">{error}</p>}
-//             {!loading && !error && posts.length === 0 && <p className="text-center text-lg">No inspirations found.</p>}
-
-//             <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
-//                 {posts.map((post) => (
-//                     <div key={post._id} className="relative bg-white p-6 rounded-lg shadow-md">
-//                         <Link to={`/postcomment/${post._id}`} className="block">
-//                             <h3 className="text-xl font-semibold">{post.title}</h3>
-//                             <p className="text-gray-700 mt-2">{post.description}</p>
-//                             {post.image && (
-//                                 <img
-//                                     src={`data:image/png;base64,${post.image}`}
-//                                     alt={post.title}
-//                                     className="w-full h-48 object-cover mt-4 rounded-lg"
-//                                 />
-//                             )}
-//                         </Link>
-//                         <button
-//                             className="mt-4 flex items-center text-gray-700 hover:text-gray-600 transition"
-//                             onClick={() => toggleCommentField(post._id)}
-//                         >
-//                             <FontAwesomeIcon icon={faComment} className="mr-2" /> Comment
-//                         </button>
-//                         {commentVisibility[post._id] && (
-//                             <div className="mt-2">
-//                                 <input
-//                                     type="text"
-//                                     className="w-full p-2 border rounded-lg"
-//                                     placeholder="Write a comment..."
-//                                     value={comments[post._id] || ""}
-//                                     onChange={(event) => handleCommentChange(post._id, event)}
-//                                 />
-//                                 <button
-//                                     className="mt-2 bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600"
-//                                     onClick={() => handleCommentSubmit(post._id)}
-//                                 >
-//                                     Post
-//                                 </button>
-//                                 {storedComments[post._id]?.map((comment, index) => (
-//                                     <p key={index} className="text-gray-600 text-sm mt-1">{comment}</p>
-//                                 ))}
-//                             </div>
-//                         )}
-//                     </div>
-//                 ))}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default PostCard;
-
-
-
-
-
-
-
-
-

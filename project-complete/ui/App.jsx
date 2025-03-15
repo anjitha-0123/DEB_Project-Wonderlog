@@ -1,19 +1,17 @@
 import React from 'react'
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
-import Addlog from './Addlog.jsx'
-import Frontpage from './Frontpage.jsx'
-import Login from './Login.jsx'
-import Signup from './Signup.jsx'
-import Homepage from './Homepage.jsx'
-import AddProfile from './Addprofile.jsx'
-import GetProfile from '../components/Profilepage.jsx'
-import AdminDash from './AdminDash.jsx'
-import AddPost from './AddInspiration.jsx'
-import PostCard from '../components/PostCard.jsx'
-import UpdateProfile from './Updateprofile.jsx'
-import Userinspirationpage from './Userinspirationpage.jsx'
-import PostDetails from './PostDetails.jsx'
-import AddComment from '../Addon/Addcomment.jsx'
+import Addlog from './src/pages/Addlog.jsx'
+import Frontpage from './src/pages/Frontpage.jsx'
+import Login from './src/pages/Login.jsx'
+import Signup from './src/pages/Signup.jsx'
+import Homepage from './src/pages/Homepage.jsx'
+import AddProfile from './src/pages/Addprofile.jsx'
+import GetProfile from './src/components/Profilepage.jsx'
+import AdminDash from './src/pages/AdminDash.jsx'
+import AddPost from './src/pages/AddInspiration.jsx'
+import PostCard from './src/components/PostCard.jsx'
+import UpdateProfile from './src/pages/Updateprofile.jsx'
+import Userinspirationpage from './src/pages/Userinspirationpage.jsx'
 
 function App() {
   return (
@@ -37,9 +35,6 @@ function App() {
         
         <Route path='/updateprofile' element={<UpdateProfile/>}/>
         <Route path='/userinspiration' element={<Userinspirationpage/>}/>
-
-        <Route path="/postdetails/:id" element={<PostDetails />} />
-        <Route path='/comment' element={<AddComment/>}/>
 
     </Routes>
     </BrowserRouter>
