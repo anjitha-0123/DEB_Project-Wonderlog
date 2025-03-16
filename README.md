@@ -14,13 +14,19 @@ WonderLog is an interactive platform that blends goal tracking with social engag
 
 🖼️ Image Uploads – Attach images to goals for better visualization and motivation.
 
+🔖Bookmark Inspiration Post - User can save the inspirational post if they want to.
+
+
 ## 🚀 How It Works
 
 1️⃣ Admin posts an inspiration – Users can see and comment on it.
 
 2️⃣ Users create their own goals – Categorize them, set target dates, and add images.
 
-3️⃣ Track and stay inspired – View progress and engage with the community. 
+3️⃣ Track and stay inspired – View progress and engage with the community.
+
+4️⃣ Bookmark inspirations  – Users can save admin's inspiration posts for later viewing.
+
 
 ## 📌 Tech Stack
 
