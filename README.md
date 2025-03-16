@@ -55,7 +55,7 @@ Make sure you have the following installed on your system:
 
 Clone the repository:
 ```
-git clone git@github.com:KBA-Learning/project-anjitha-0123.git
+git clone git@github.com:anjitha-0123/DEB_Project-Wonderlog.git
 
 cd Wonderlog
 ```
