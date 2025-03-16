@@ -7,6 +7,8 @@ WonderLog is an interactive platform that blends goal tracking with social engag
 https://youtu.be/YmBvtykA8kY?si=AOLdccz40htxNocH
 ```
 
+<a href="https://youtu.be/YmBvtykA8kY?si=AOLdccz40htxNocH">
+
 ## 🌟 Features
 
 ✅ Admin Inspirational Posts – The admin can share motivational posts that users can view and engage with.
