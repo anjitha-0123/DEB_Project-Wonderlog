@@ -3,8 +3,8 @@
 WonderLog is an interactive platform that blends goal tracking with social engagement, allowing users to stay inspired and motivated on their journey to achieving their dreams.
 
 ## Project-Youtube Vedio Link
-<a href="https://youtu.be/YmBvtykA8kY?si=AOLdccz40htxNocH">
 
+https://youtu.be/YmBvtykA8kY?si=AOLdccz40htxNocH
 
 ## 🌟 Features
 
