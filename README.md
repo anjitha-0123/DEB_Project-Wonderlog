@@ -69,12 +69,12 @@ cd Wonderlog
 
 ### Build & Run the Containers:
 ```
-docker-compose up --build
+docker compose up --build
 ```
 
 ### Stopping the Containers:
 ```
-docker-compose down
+docker compose down
 ```
 
 ### Check Running Containers:
